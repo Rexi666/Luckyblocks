@@ -1,0 +1,5 @@
+name: Luckyblocks
+version: '1.0'
+main: org.rexi.luckyblocks.Luckyblocks
+api-version: '1.21'
+author: Rexi666
