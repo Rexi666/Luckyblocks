@@ -3,3 +3,10 @@ version: '1.0'
 main: org.rexi.luckyblocks.Luckyblocks
 api-version: '1.21'
 author: Rexi666
+commands:
+  luckytest:
+    description: Prueba un evento de LuckyBlock
+    usage: /luckytest <normal|special> <id>
+permissions:
+  luckyblock.testevent:
+    default: op
