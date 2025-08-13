@@ -8,17 +8,21 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SpongeAbsorbEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.rexi.luckyblocks.Luckyblocks;
 import org.rexi.luckyblocks.events.normal.NormalLucky;
 import org.rexi.luckyblocks.events.normal.NormalNeutral;
 import org.rexi.luckyblocks.events.normal.NormalUnlucky;
 import org.rexi.luckyblocks.events.special.SpecialLucky;
 import org.rexi.luckyblocks.events.special.SpecialNeutral;
+import org.rexi.luckyblocks.events.special.SpecialUnlucky;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.BiConsumer;
+
+import static org.bukkit.Bukkit.getServer;
 
 public class LuckyblockListener implements Listener {
 
@@ -40,6 +44,7 @@ public class LuckyblockListener implements Listener {
     private final NormalNeutral NormalNeutral;
     private final SpecialLucky SpecialLucky;
     private final SpecialNeutral SpecialNeutral;
+    private final SpecialUnlucky SpecialUnlucky;
 
     public LuckyblockListener(Luckyblocks plugin) {
         this.plugin = plugin;
@@ -47,8 +52,12 @@ public class LuckyblockListener implements Listener {
         this.NormalLucky = new NormalLucky();
         this.NormalUnlucky = new NormalUnlucky();
         this.NormalNeutral = new NormalNeutral(plugin);
+
         this.SpecialLucky = new SpecialLucky(plugin);
         this.SpecialNeutral = new SpecialNeutral();
+        this.SpecialUnlucky = new SpecialUnlucky();
+
+        getServer().getPluginManager().registerEvents(SpecialUnlucky, plugin);
 
         registrarEventosNormales();
         registrarEventosEspeciales();
@@ -75,12 +84,14 @@ public class LuckyblockListener implements Listener {
             Player player = event.getPlayer();
             player.spawnParticle(Particle.HAPPY_VILLAGER, block.getLocation(), 50, 0.5, 0.5, 0.5, 0.1);
             player.playSound(player.getLocation(), Sound.BLOCK_CHAIN_PLACE, 1.0f, 1.0f);
+            event.setDropItems(false);
 
             normalLuckyBlockBreak(block, player);
         } else if (blockType.equalsIgnoreCase("WET_SPONGE")) {
             Player player = event.getPlayer();
             player.spawnParticle(Particle.HAPPY_VILLAGER, block.getLocation(), 50, 0.5, 0.5, 0.5, 0.1);
             player.playSound(player.getLocation(), Sound.ITEM_TRIDENT_THROW, 1.0f, 1.0f);
+            event.setDropItems(false);
 
             specialLuckyBlockBreak(block, player);
         }
@@ -89,6 +100,12 @@ public class LuckyblockListener implements Listener {
     @EventHandler
     public void BlockLuckyBlockChange(SpongeAbsorbEvent event) {
         event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onExplosion(EntityExplodeEvent event) {
+        // Evitar que se destruyan bloques
+        event.blockList().clear();
     }
 
     // Ejecutar aleatorio
@@ -126,6 +143,11 @@ public class LuckyblockListener implements Listener {
 
         // Unlucky
         normalEvents.add(new EventEntry("NormalUnluckyPotions", (block, player) -> NormalUnlucky.NormalUnluckyPotions(player, block)));
+        normalEvents.add(new EventEntry("NormalUnluckySlime", (block, player) -> NormalUnlucky.NormalUnluckySlime(player, block)));
+        normalEvents.add(new EventEntry("NormalUnluckyScary", (block, player) -> NormalUnlucky.NormalUnluckyScary(player, block)));
+        normalEvents.add(new EventEntry("NormalUnluckyJump", (block, player) -> NormalUnlucky.NormalUnluckyJump(player, block)));
+        normalEvents.add(new EventEntry("NormalUnluckyWitch", (block, player) -> NormalUnlucky.NormalUnluckyWitch(player, block)));
+        normalEvents.add(new EventEntry("NormalUnluckyPigman", (block, player) -> NormalUnlucky.NormalUnluckyPigman(player, block)));
     }
 
     public void registrarEventosEspeciales() {
@@ -143,7 +165,17 @@ public class LuckyblockListener implements Listener {
         specialEvents.add(new EventEntry("SpecialLuckyBlocks", (block, player) -> SpecialLucky.SpecialLuckyBlocks(player, block)));
 
         // Neutral
-        specialEvents.add(new EventEntry("SpecialNeutralAldeano", (block, player) -> SpecialNeutral.SpecialNeutralAldeano(player, block)));
         specialEvents.add(new EventEntry("SpecialNeutralTrader", (block, player) -> SpecialNeutral.SpecialNeutralTrader(player, block)));
+
+        // Unlucky
+        specialEvents.add(new EventEntry("SpecialUnluckyAnvil", (block, player) -> SpecialUnlucky.SpecialUnluckyAnvil(player, block)));
+        specialEvents.add(new EventEntry("SpecialUnluckyZombie", (block, player) -> SpecialUnlucky.SpecialUnluckyZombie(player, block)));
+        specialEvents.add(new EventEntry("SpecialUnluckyCreeper", (block, player) -> SpecialUnlucky.SpecialUnluckyCreeper(player, block)));
+        specialEvents.add(new EventEntry("SpecialUnluckyWater", (block, player) -> SpecialUnlucky.SpecialUnluckyWater(player, block)));
+        specialEvents.add(new EventEntry("SpecialUnluckyTNT", (block, player) -> SpecialUnlucky.SpecialUnluckyTNT(player, block)));
+        specialEvents.add(new EventEntry("SpecialUnluckyDiamond", (block, player) -> SpecialUnlucky.SpecialUnluckyDiamond(player, block)));
+        specialEvents.add(new EventEntry("SpecialUnluckyFlyingCreeper", (block, player) -> SpecialUnlucky.SpecialUnluckyFlyingCreeper(player, block)));
+        specialEvents.add(new EventEntry("SpecialUnluckyFlyingTNT", (block, player) -> SpecialUnlucky.SpecialUnluckyFlyingTNT(player, block)));
+        specialEvents.add(new EventEntry("SpecialUnluckyMuchasTNT", (block, player) -> SpecialUnlucky.SpecialUnluckyMuchasTNT(player, block)));
     }
 }

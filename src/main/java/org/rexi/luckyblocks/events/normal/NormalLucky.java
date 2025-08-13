@@ -81,12 +81,12 @@ public class NormalLucky {
         lore.add(Component.text("¡No sabes qué efectos tiene!").color(NamedTextColor.DARK_PURPLE));
         meta.lore(lore);
 
-        meta.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 45, 0), true);
-        meta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 180, 0), true);
-        meta.addCustomEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 180, 0), true);
+        meta.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 45*20, 0), true);
+        meta.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 180*20, 0), true);
+        meta.addCustomEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 180*20, 0), true);
         meta.addCustomEffect(new PotionEffect(PotionEffectType.INSTANT_HEALTH, 0, 0), true);
-        meta.addCustomEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 180, 0), true);
-        meta.addCustomEffect(new PotionEffect(PotionEffectType.STRENGTH, 180, 0), true);
+        meta.addCustomEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 180*20, 0), true);
+        meta.addCustomEffect(new PotionEffect(PotionEffectType.STRENGTH, 180*20, 0), true);
 
         meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
 

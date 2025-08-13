@@ -107,7 +107,13 @@ public class NormalNeutral {
         Location l = block.getLocation().add(0, 1, 0);
 
         l.getWorld().spawnEntity(l, EntityType.FIREWORK_ROCKET);
-        l.getWorld().dropItemNaturally(l, new ItemStack(Material.POTATO));
+        for (int i = 0; i < 8; i++) {
+            final Location finalLocation = l.clone();
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                finalLocation.getWorld().dropItemNaturally(finalLocation, new ItemStack(Material.POTATO));
+            }, 10L * i);
+            l.setY(l.getY() + 1);
+        }
 
         player.sendMessage(Component.text("¡Patatas!").color(NamedTextColor.YELLOW));
     }
