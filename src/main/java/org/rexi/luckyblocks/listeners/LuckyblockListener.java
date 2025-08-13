@@ -10,7 +10,10 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SpongeAbsorbEvent;
 import org.rexi.luckyblocks.Luckyblocks;
 import org.rexi.luckyblocks.events.normal.NormalLucky;
+import org.rexi.luckyblocks.events.normal.NormalNeutral;
+import org.rexi.luckyblocks.events.normal.NormalUnlucky;
 import org.rexi.luckyblocks.events.special.SpecialLucky;
+import org.rexi.luckyblocks.events.special.SpecialNeutral;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,35 +36,22 @@ public class LuckyblockListener implements Listener {
     private final List<EventEntry> specialEvents = new ArrayList<>();
 
     private final NormalLucky NormalLucky;
+    private final NormalUnlucky NormalUnlucky;
+    private final NormalNeutral NormalNeutral;
     private final SpecialLucky SpecialLucky;
+    private final SpecialNeutral SpecialNeutral;
 
     public LuckyblockListener(Luckyblocks plugin) {
         this.plugin = plugin;
 
         this.NormalLucky = new NormalLucky();
+        this.NormalUnlucky = new NormalUnlucky();
+        this.NormalNeutral = new NormalNeutral(plugin);
         this.SpecialLucky = new SpecialLucky(plugin);
-        // Eventos normales
-        normalEvents.add(new EventEntry("NormalLuckyCake", (block, player) -> NormalLucky.NormalLuckyCake(player)));
-        normalEvents.add(new EventEntry("NormalLuckyCookedFood", (block, player) -> NormalLucky.NormalLuckyCookedFood(player, block)));
-        normalEvents.add(new EventEntry("NormalLuckyEmeraldBlock", (block, player) -> NormalLucky.NormalLuckyEmeraldBlock(player, block)));
-        normalEvents.add(new EventEntry("NormalLuckyIronBlock", (block, player) -> NormalLucky.NormalLuckyIronBlock(player, block)));
-        normalEvents.add(new EventEntry("NormalLuckyPotions", (block, player) -> NormalLucky.NormalLuckyPotions(player, block)));
-        normalEvents.add(new EventEntry("NormalLuckyCats", (block, player) -> NormalLucky.NormalLuckyCats(player, block)));
-        normalEvents.add(new EventEntry("NormalLuckyDogs", (block, player) -> NormalLucky.NormalLuckyDogs(player, block)));
-        normalEvents.add(new EventEntry("NormalLuckyExperience", (block, player) -> NormalLucky.NormalLuckyExperience(player, block)));
+        this.SpecialNeutral = new SpecialNeutral();
 
-        // Eventos especiales
-        specialEvents.add(new EventEntry("SpecialLuckyDiamondPillar", (block, player) -> SpecialLucky.SpecialLuckyDiamondPillar(player, block)));
-        specialEvents.add(new EventEntry("SpecialLuckyDiamondBlock", (block, player) -> SpecialLucky.SpecialLuckyDiamondBlock(player, block)));
-        specialEvents.add(new EventEntry("SpecialLuckyGoldenApples", (block, player) -> SpecialLucky.SpecialLuckyGoldenApples(player, block)));
-        specialEvents.add(new EventEntry("SpecialLuckyAxe", (block, player) -> SpecialLucky.SpecialLuckyAxe(player, block)));
-        specialEvents.add(new EventEntry("SpecialLuckyPickaxe", (block, player) -> SpecialLucky.SpecialLuckyPickaxe(player, block)));
-        specialEvents.add(new EventEntry("SpecialLuckySword", (block, player) -> SpecialLucky.SpecialLuckySword(player, block)));
-        specialEvents.add(new EventEntry("SpecialLuckyHelmet", (block, player) -> SpecialLucky.SpecialLuckyHelmet(player, block)));
-        specialEvents.add(new EventEntry("SpecialLuckyChestplate", (block, player) -> SpecialLucky.SpecialLuckyChestplate(player, block)));
-        specialEvents.add(new EventEntry("SpecialLuckyLeggings", (block, player) -> SpecialLucky.SpecialLuckyLeggings(player, block)));
-        specialEvents.add(new EventEntry("SpecialLuckyBoots", (block, player) -> SpecialLucky.SpecialLuckyBoots(player, block)));
-        specialEvents.add(new EventEntry("SpecialLuckyBlocks", (block, player) -> SpecialLucky.SpecialLuckyBlocks(player, block)));
+        registrarEventosNormales();
+        registrarEventosEspeciales();
     }
 
     public List<EventEntry> getNormalEvents() {
@@ -110,5 +100,50 @@ public class LuckyblockListener implements Listener {
     public void specialLuckyBlockBreak(Block block, Player player) {
         int randomIndex = random.nextInt(specialEvents.size());
         specialEvents.get(randomIndex).action().accept(block, player);
+    }
+
+    public void registrarEventosNormales() {
+        // Lucky
+        normalEvents.add(new EventEntry("NormalLuckyCake", (block, player) -> NormalLucky.NormalLuckyCake(player)));
+        normalEvents.add(new EventEntry("NormalLuckyCookedFood", (block, player) -> NormalLucky.NormalLuckyCookedFood(player, block)));
+        normalEvents.add(new EventEntry("NormalLuckyEmeraldBlock", (block, player) -> NormalLucky.NormalLuckyEmeraldBlock(player, block)));
+        normalEvents.add(new EventEntry("NormalLuckyIronBlock", (block, player) -> NormalLucky.NormalLuckyIronBlock(player, block)));
+        normalEvents.add(new EventEntry("NormalLuckyPotions", (block, player) -> NormalLucky.NormalLuckyPotions(player, block)));
+        normalEvents.add(new EventEntry("NormalLuckyCats", (block, player) -> NormalLucky.NormalLuckyCats(player, block)));
+        normalEvents.add(new EventEntry("NormalLuckyDogs", (block, player) -> NormalLucky.NormalLuckyDogs(player, block)));
+        normalEvents.add(new EventEntry("NormalLuckyExperience", (block, player) -> NormalLucky.NormalLuckyExperience(player, block)));
+
+        // Neutral
+        normalEvents.add(new EventEntry("NormalNeutralChickenRain", (block, player) -> NormalNeutral.NormalNeutralChickenRain(player, block)));
+        normalEvents.add(new EventEntry("NormalNeutralGalletas", (block, player) -> NormalNeutral.NormalNeutralGalletas(player, block)));
+        normalEvents.add(new EventEntry("NormalNeutralTintes", (block, player) -> NormalNeutral.NormalNeutralTintes(player, block)));
+        normalEvents.add(new EventEntry("NormalNeutralPeces", (block, player) -> NormalNeutral.NormalNeutralPeces(player, block)));
+        normalEvents.add(new EventEntry("NormalNeutralOveja", (block, player) -> NormalNeutral.NormalNeutralOveja(player, block)));
+        normalEvents.add(new EventEntry("NormalNeutralSlime", (block, player) -> NormalNeutral.NormalNeutralSlime(player, block)));
+        normalEvents.add(new EventEntry("NormalNeutralPatatas", (block, player) -> NormalNeutral.NormalNeutralPatatas(player, block)));
+        normalEvents.add(new EventEntry("NormalNeutralOvejaArcoiris", (block, player) -> NormalNeutral.NormalNeutralOvejaArcoiris(player, block)));
+        normalEvents.add(new EventEntry("NormalNeutralComidaCruda", (block, player) -> NormalNeutral.NormalNeutralComidaCruda(player, block)));
+
+        // Unlucky
+        normalEvents.add(new EventEntry("NormalUnluckyPotions", (block, player) -> NormalUnlucky.NormalUnluckyPotions(player, block)));
+    }
+
+    public void registrarEventosEspeciales() {
+        // Lucky
+        specialEvents.add(new EventEntry("SpecialLuckyDiamondPillar", (block, player) -> SpecialLucky.SpecialLuckyDiamondPillar(player, block)));
+        specialEvents.add(new EventEntry("SpecialLuckyDiamondBlock", (block, player) -> SpecialLucky.SpecialLuckyDiamondBlock(player, block)));
+        specialEvents.add(new EventEntry("SpecialLuckyGoldenApples", (block, player) -> SpecialLucky.SpecialLuckyGoldenApples(player, block)));
+        specialEvents.add(new EventEntry("SpecialLuckyAxe", (block, player) -> SpecialLucky.SpecialLuckyAxe(player, block)));
+        specialEvents.add(new EventEntry("SpecialLuckyPickaxe", (block, player) -> SpecialLucky.SpecialLuckyPickaxe(player, block)));
+        specialEvents.add(new EventEntry("SpecialLuckySword", (block, player) -> SpecialLucky.SpecialLuckySword(player, block)));
+        specialEvents.add(new EventEntry("SpecialLuckyHelmet", (block, player) -> SpecialLucky.SpecialLuckyHelmet(player, block)));
+        specialEvents.add(new EventEntry("SpecialLuckyChestplate", (block, player) -> SpecialLucky.SpecialLuckyChestplate(player, block)));
+        specialEvents.add(new EventEntry("SpecialLuckyLeggings", (block, player) -> SpecialLucky.SpecialLuckyLeggings(player, block)));
+        specialEvents.add(new EventEntry("SpecialLuckyBoots", (block, player) -> SpecialLucky.SpecialLuckyBoots(player, block)));
+        specialEvents.add(new EventEntry("SpecialLuckyBlocks", (block, player) -> SpecialLucky.SpecialLuckyBlocks(player, block)));
+
+        // Neutral
+        specialEvents.add(new EventEntry("SpecialNeutralAldeano", (block, player) -> SpecialNeutral.SpecialNeutralAldeano(player, block)));
+        specialEvents.add(new EventEntry("SpecialNeutralTrader", (block, player) -> SpecialNeutral.SpecialNeutralTrader(player, block)));
     }
 }
