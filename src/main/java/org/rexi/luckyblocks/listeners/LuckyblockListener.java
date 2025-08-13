@@ -1,5 +1,7 @@
 package org.rexi.luckyblocks.listeners;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -9,6 +11,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SpongeAbsorbEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.rexi.luckyblocks.Luckyblocks;
 import org.rexi.luckyblocks.events.normal.NormalLucky;
 import org.rexi.luckyblocks.events.normal.NormalNeutral;
@@ -106,6 +111,32 @@ public class LuckyblockListener implements Listener {
     public void onExplosion(EntityExplodeEvent event) {
         // Evitar que se destruyan bloques
         event.blockList().clear();
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+
+        // Clonamos el inventario para dropearlo manualmente
+        PlayerInventory inv = player.getInventory();
+        Location deathLoc = player.getLocation();
+
+        for (ItemStack item : inv.getContents()) {
+            if (item != null && item.getType() != Material.AIR) {
+                deathLoc.getWorld().dropItemNaturally(deathLoc, item);
+            }
+        }
+
+        for (ItemStack armor : inv.getArmorContents()) {
+            if (armor != null && armor.getType() != Material.AIR) {
+                deathLoc.getWorld().dropItemNaturally(deathLoc, armor);
+            }
+        }
+
+        // Limpiar drops automáticos (por si OneBlock los bloquea)
+        event.getDrops().clear();
+        player.getInventory().clear();
+        player.getInventory().setArmorContents(null);
     }
 
     // Ejecutar aleatorio
