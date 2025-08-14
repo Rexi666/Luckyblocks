@@ -1,9 +1,6 @@
 package org.rexi.luckyblocks.listeners;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,9 +19,7 @@ import org.rexi.luckyblocks.events.special.SpecialLucky;
 import org.rexi.luckyblocks.events.special.SpecialNeutral;
 import org.rexi.luckyblocks.events.special.SpecialUnlucky;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 import static org.bukkit.Bukkit.getServer;
@@ -81,10 +76,25 @@ public class LuckyblockListener implements Listener {
     #              LISTENERS              #
     #################################### */
 
+    private final Set<Location> blockedLocations = new HashSet<>();
+
     @EventHandler
     public void onLuckyBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
         String blockType = block.getType().toString();
+        Location loc = block.getLocation();
+
+        if (blockedLocations.contains(loc)) return;
+
+        if (blockType.equalsIgnoreCase("OAK_LOG")) {
+            blockedLocations.add(loc);
+
+            // Desbloquear tras 10 ticks
+            Bukkit.getScheduler().runTaskLater(plugin, () -> blockedLocations.remove(loc), 10L);
+            return;
+        }
+
+
         if (blockType.equalsIgnoreCase("SPONGE")) {
             Player player = event.getPlayer();
             player.spawnParticle(Particle.HAPPY_VILLAGER, block.getLocation(), 50, 0.5, 0.5, 0.5, 0.1);
