@@ -10,6 +10,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
@@ -19,6 +20,7 @@ import org.bukkit.util.Vector;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 public class SpecialUnlucky implements Listener {
 
@@ -86,6 +88,7 @@ public class SpecialUnlucky implements Listener {
         player.sendMessage(Component.text("¡NoOOooOoOoOooOOooO mi casa!").color(NamedTextColor.YELLOW));
     }
 
+    private Map<UUID, Location> afterDead = new HashMap<>();
     public void SpecialUnluckyWater(Player player, Block block) {
         Location l = block.getLocation().add(0, 1, 0);
         World world = l.getWorld();
@@ -108,6 +111,29 @@ public class SpecialUnlucky implements Listener {
 
         player.teleport(l);
         player.sendMessage(Component.text("Una muerte lenta...").color(NamedTextColor.YELLOW));
+        afterDead.put(player.getUniqueId(), l);
+    }
+    @EventHandler
+    public void onDeath(PlayerDeathEvent event) {
+        Player player = event.getPlayer();
+        Location l = afterDead.getOrDefault(player.getUniqueId(), null);
+        if (l == null) return;
+
+        World world = l.getWorld();
+
+        int baseX = l.getBlockX();
+        int baseY = l.getBlockY();
+        int baseZ = l.getBlockZ();
+
+        for (int x = baseX - 1; x <= baseX + 1; x++) {
+            for (int z = baseZ - 1; z <= baseZ + 1; z++) {
+                for (int y = baseY - 1; y <= baseY + 2; y++) {
+                    world.getBlockAt(x, y, z).setType(Material.AIR);
+                }
+            }
+        }
+
+        afterDead.remove(player.getUniqueId());
     }
 
     public void SpecialUnluckyTNT(Player player, Block block) {
