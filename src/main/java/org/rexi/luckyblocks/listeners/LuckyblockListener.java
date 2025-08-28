@@ -146,7 +146,7 @@ public class LuckyblockListener implements Listener {
         // Limpiar drops automáticos (por si OneBlock los bloquea)
         event.getDrops().clear();
         player.getInventory().clear();
-        player.getInventory().setArmorContents(null);
+        player.getInventory().setArmorContents(new ItemStack[4]);
     }
 
     // Ejecutar aleatorio
